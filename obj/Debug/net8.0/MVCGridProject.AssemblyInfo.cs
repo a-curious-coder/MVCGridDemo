@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MVCGridProject")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+70023ecba2b18bc3ce787b347c289b68f7fd8b38")]
 [assembly: System.Reflection.AssemblyProductAttribute("MVCGridProject")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MVCGridProject")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

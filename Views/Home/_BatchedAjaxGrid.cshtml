@@ -16,11 +16,11 @@
     .Empty("No data found")
     .Pageable(pager =>
     {
-        pager.PageSizes = new Dictionary<Int32, String> { { 10, "10" }, { 20, "20" }, { 50, "50" } };
+        pager.PageSizes = new Dictionary<Int32, String> {  { 5, "5" }, { 10, "10" }, { 20, "20" }, { 50, "50" } };
         pager.ShowPageSizes = true;
         pager.PagesToDisplay = 5;
         pager.CurrentPage = 1;
-        pager.RowsPerPage = 20;
+        pager.RowsPerPage = 5;
     })
     .Filterable()
     .Sortable()

@@ -25,16 +25,25 @@ public class HomeController : Controller
         }
     }
 
-    // Remove the following method:
-    // public IActionResult Index()
-    // {
-    //     var grid = new Grid<Product>(GetYourData())
-    //         .WithPaging(5) // Set default page size to 5
-    //         // ... other grid configurations ...
-    //         ;
-    //
-    //     return View(grid);
-    // }
+    public IActionResult Index()
+    {
+        var viewModel = new IndexViewModel
+        {
+            Title = "MVC Grid Project Showcase",
+            Description = "Welcome to the MVC Grid Project Showcase! This application demonstrates various implementations of grids using the NonFactors.Mvc.Grid library. Explore different grid types and functionalities to see how they can be used in your ASP.NET Core MVC projects.",
+            GridTypes = new List<GridTypeInfo>
+            {
+                new GridTypeInfo { Name = "Basic Grid", Description = "A simple grid implementation with basic functionality.", Url = Url.Action("BasicGrid") },
+                new GridTypeInfo { Name = "Advanced Grid", Description = "An advanced grid with more complex features and customizations.", Url = Url.Action("AdvancedGrid") },
+                new GridTypeInfo { Name = "Custom Grid", Description = "A grid showcasing custom styling and advanced configurations.", Url = Url.Action("CustomGrid") },
+                new GridTypeInfo { Name = "Ajax Grid", Description = "A grid that loads data asynchronously using Ajax.", Url = Url.Action("AjaxGrid") },
+                new GridTypeInfo { Name = "Grouped Grid", Description = "A grid demonstrating grouping functionality.", Url = Url.Action("GroupedGrid") },
+                new GridTypeInfo { Name = "Batched Ajax Grid", Description = "An Ajax grid that loads data in batches for improved performance.", Url = Url.Action("BatchedAjaxGrid") }
+            }
+        };
+
+        return View(viewModel);
+    }
 
     public IActionResult Privacy()
     {
@@ -163,5 +172,11 @@ public class HomeController : Controller
         }
 
         return products;
+    }
+
+    [HttpGet("/health")]
+    public IActionResult Health()
+    {
+        return Ok("Healthy");
     }
 }

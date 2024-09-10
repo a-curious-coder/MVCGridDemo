@@ -32,3 +32,4 @@ C:\Users\callu\Desktop\dcc\MVCGrid\MVCGridProject\bin\Debug\net8.0\Mvc.Grid.Core
 C:\Users\callu\Desktop\dcc\MVCGrid\MVCGridProject\obj\Debug\net8.0\MVCGridProject.csproj.AssemblyReference.cache
 C:\Users\callu\Desktop\dcc\MVCGrid\MVCGridProject\obj\Debug\net8.0\MVCGridProject.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\callu\Desktop\dcc\MVCGrid\MVCGridProject\obj\Debug\net8.0\MVCGridP.32458407.Up2Date
+C:\Users\callu\Desktop\dcc\MVCGrid\MVCGridProject\obj\Debug\net8.0\MVCGridProject.sourcelink.json

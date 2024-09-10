@@ -1,4 +1,5 @@
 using NonFactors.Mvc.Grid;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,11 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvcGrid();
 
-// Configure MvcGrid options
-// builder.Services.Configure<GridGlobalOptions>(options =>
-// {
-//     options.DefaultPageSize = 5;
-// });
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo("/root/.aspnet/DataProtection-Keys"));
+
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -18,8 +18,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // Comment out or remove the HTTPS redirection middleware
-    // app.UseHsts();
 }
 
 // Comment out or remove the HTTPS redirection middleware
@@ -35,5 +33,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Use the following line to bind to localhost on port 5001
+app.MapHealthChecks("/health");
+
+// Remove the explicit binding, let it use the ASPNETCORE_URLS environment variable
 app.Run("http://127.0.0.1:5001");
