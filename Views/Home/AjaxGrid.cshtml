@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Ajax Grid";
+}
+
+<h1 class="text-3xl font-bold mb-6">@ViewData["Title"]</h1>
+
+<div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-2">Description</h2>
+    <p class="text-gray-600 dark:text-gray-300">
+        This grid demonstrates loading data asynchronously using Ajax:
+    </p>
+    <ul class="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
+        <li>Data is loaded without a full page refresh</li>
+        <li>Improves performance for large datasets</li>
+        <li>Allows for real-time updates</li>
+        <li>Shows a loading indicator while data is being fetched</li>
+    </ul>
+</div>
+
+<div id="grid-container">
+    <div id="loading-indicator" class="text-center py-4">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100"></div>
+        <p class="mt-2">Loading data... This may take up to 30 seconds.</p>
+    </div>
+    @Html.AjaxGrid(Url.Action("GetAjaxGridData"))
+</div>
+
+@section Scripts {
+    <script src="~/js/mvc-grid/mvc-grid.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var grid = new MvcGrid(document.querySelector(".mvc-grid"));
+            grid.reload = function () {
+                document.getElementById("loading-indicator").style.display = "block";
+                return MvcGrid.prototype.reload.apply(this, arguments).then(function () {
+                    document.getElementById("loading-indicator").style.display = "none";
+                });
+            };
+            grid.reload();
+        });
+    </script>
+}

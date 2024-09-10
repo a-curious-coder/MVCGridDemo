@@ -1,0 +1,87 @@
+@model IEnumerable<MVCGridProject.Models.Product>
+@using NonFactors.Mvc.Grid;
+
+@{
+    ViewData["Title"] = "Grouped Grid";
+}
+
+<h1 class="text-3xl font-bold mb-6">@ViewData["Title"]</h1>
+
+<div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-2">Description</h2>
+    <p class="text-gray-600 dark:text-gray-300">
+        This grid demonstrates grouping capabilities:
+    </p>
+    <ul class="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
+        <li>Products are grouped by category</li>
+        <li>Expandable/collapsible groups</li>
+        <li>Aggregated data for each group</li>
+    </ul>
+</div>
+
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(model => model.Category).Titled("Category");
+        columns.Add(model => model.Name).Titled("Name");
+        columns.Add(model => model.Price).Titled("Price").Formatted("{0:C}");
+        columns.Add(model => model.Stock).Titled("Stock");
+    })
+    .Using(GridFilterMode.Header)
+    .Empty("No data found")
+    .Filterable()
+    .Sortable()
+    .Pageable()
+)
+
+@section Scripts {
+    <script src="~/js/mvc-grid/mvc-grid.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const grid = new MvcGrid(document.querySelector(".mvc-grid"));
+            
+            // Group the data by category
+            const groupedData = {};
+            grid.rows.forEach(row => {
+                const category = row.cells[0].innerText;
+                if (!groupedData[category]) {
+                    groupedData[category] = [];
+                }
+                groupedData[category].push(row);
+            });
+
+            // Create group headers and hide individual rows
+            Object.keys(groupedData).forEach(category => {
+                const groupHeader = document.createElement('tr');
+                groupHeader.className = 'group-header bg-gray-200 dark:bg-gray-700 cursor-pointer';
+                groupHeader.innerHTML = `
+                    <td colspan="4">
+                        <span class="font-bold">${category}</span>
+                        <span class="ml-2">(${groupedData[category].length} items)</span>
+                        <span class="float-right">▼</span>
+                    </td>
+                `;
+                groupHeader.addEventListener('click', () => toggleGroup(category));
+                
+                grid.body.insertBefore(groupHeader, groupedData[category][0]);
+                groupedData[category].forEach(row => {
+                    row.classList.add('group-item', `group-${category.replace(/\s+/g, '-')}`);
+                    row.style.display = 'none';
+                });
+            });
+
+            function toggleGroup(category) {
+                const groupItems = document.querySelectorAll(`.group-${category.replace(/\s+/g, '-')}`);
+                const groupHeader = document.querySelector(`.group-header:has(span:contains('${category}'))`);
+                const isExpanded = groupItems[0].style.display !== 'none';
+                
+                groupItems.forEach(item => {
+                    item.style.display = isExpanded ? 'none' : '';
+                });
+                
+                groupHeader.querySelector('span:last-child').textContent = isExpanded ? '▼' : '▲';
+            }
+        });
+    </script>
+}

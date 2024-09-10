@@ -1,0 +1,41 @@
+@model IEnumerable<MVCGridProject.Models.Product>
+@using NonFactors.Mvc.Grid;
+
+@{
+    ViewData["Title"] = "Batched Ajax Grid";
+}
+
+<h1 class="text-3xl font-bold mb-6">@ViewData["Title"]</h1>
+
+<div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-2">Description</h2>
+    <p class="text-gray-600 dark:text-gray-300">
+        This grid demonstrates loading data asynchronously in batches using Ajax with Nonfactors MVC Grid:
+    </p>
+    <ul class="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
+        <li>Data is pre-loaded on the server side</li>
+        <li>Each batch retrieval simulates a quick database query (200ms delay)</li>
+        <li>Improves perceived performance for large datasets</li>
+        <li>Allows for smoother scrolling and pagination</li>
+        <li>Reduces initial load time and memory usage on the client</li>
+    </ul>
+</div>
+
+<div id="grid-container">
+    @Html.AjaxGrid(Url.Action("GetBatchedAjaxGridData"))
+</div>
+
+@section Scripts {
+    <script src="~/js/mvc-grid/mvc-grid.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var grid = new MvcGrid(document.querySelector(".mvc-grid"));
+            grid.reload = function () {
+                document.getElementById("grid-container").classList.add("opacity-50");
+                return MvcGrid.prototype.reload.apply(this, arguments).then(function () {
+                    document.getElementById("grid-container").classList.remove("opacity-50");
+                });
+            };
+        });
+    </script>
+}

@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MVCGridProject</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"}
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <header class="bg-white dark:bg-gray-800 shadow">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <a class="text-xl font-bold text-gray-800 dark:text-white" asp-area="" asp-controller="Home" asp-action="Index">MVCGridProject</a>
+                <div class="flex space-x-4">
+                    <a class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white" asp-area="" asp-controller="Home" asp-action="BasicGrid">Basic Grid</a>
+                    <a class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white" asp-area="" asp-controller="Home" asp-action="AdvancedGrid">Advanced Grid</a>
+                    <a class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white" asp-area="" asp-controller="Home" asp-action="CustomGrid">Custom Grid</a>
+                    <a class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white" asp-area="" asp-controller="Home" asp-action="AjaxGrid">Ajax Grid</a>
+                    <a class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white" asp-area="" asp-controller="Home" asp-action="GroupedGrid">Grouped Grid</a>
+                    <a class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    <a class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white" asp-area="" asp-controller="Home" asp-action="BatchedAjaxGrid">Batched Ajax Grid</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container mx-auto px-6 py-8">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="bg-white dark:bg-gray-800 mt-8 py-4">
+        <div class="container mx-auto px-6">
+            <p class="text-center text-gray-600 dark:text-gray-400">&copy; 2024 - MVCGridProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

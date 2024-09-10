@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  mvcgridproject:
+    image: mvcgridproject
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5001
+    volumes:
+      - mvcgrid_data:/app/data
+
+volumes:
+  mvcgrid_data:

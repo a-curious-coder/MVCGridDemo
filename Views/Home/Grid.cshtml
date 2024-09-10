@@ -1,0 +1,40 @@
+@model IEnumerable<MVCGridProject.Models.Person>
+@using NonFactors.Mvc.Grid;
+
+@{
+    ViewData["Title"] = "Person Grid";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(model => model.Id).Titled("ID");
+        columns.Add(model => model.Name).Titled("Name");
+        columns.Add(model => model.Age).Titled("Age");
+        columns.Add(model => model.Email).Titled("Email");
+    })
+    .Using(GridFilterMode.Header)
+    .Empty("No data found")
+    .Filterable()
+    .Sortable()
+    .Pageable(pager =>
+    {
+        pager.PageSizes = new Dictionary<Int32, String> { { 0, "All" }, { 5, "5" }, { 10, "10" }, { 20, "20" } };
+        pager.ShowPageSizes = true;
+        pager.PagesToDisplay = 5;
+        pager.CurrentPage = 1;
+        pager.RowsPerPage = 10;
+    })
+)
+
+@section Scripts {
+    <script src="~/lib/mvc-grid/mvc-grid.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            new MvcGrid(document.querySelector(".mvc-grid") ?? document.createElement("div"));
+        });
+    </script>
+}

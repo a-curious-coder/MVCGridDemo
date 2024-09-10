@@ -1,0 +1,138 @@
+{
+  "version": 3,
+  "targets": {
+    "net8.0": {
+      "NonFactors.Grid.Core.Mvc6/7.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Mvc.Grid.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Mvc.Grid.Core.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
+      "NonFactors.Grid.Mvc6/7.2.0": {
+        "type": "package",
+        "dependencies": {
+          "NonFactors.Grid.Core.Mvc6": "[7.2.0]"
+        }
+      }
+    }
+  },
+  "libraries": {
+    "NonFactors.Grid.Core.Mvc6/7.2.0": {
+      "sha512": "Fn+s1mhpJNrKKfhA16bxuO15TDLSPCfUt3i2wZU08rlwu1Tmuo0Qiu8BXdAOrSWkhnhkBSlSmHgld7IonMslKw==",
+      "type": "package",
+      "path": "nonfactors.grid.core.mvc6/7.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net6.0/Mvc.Grid.Core.dll",
+        "nonfactors.grid.core.mvc6.7.2.0.nupkg.sha512",
+        "nonfactors.grid.core.mvc6.nuspec"
+      ]
+    },
+    "NonFactors.Grid.Mvc6/7.2.0": {
+      "sha512": "frx2SaTiK4yZ5L1ua24kguOr7KbVxIuOMS6glnKG1EBkANbBHsUp3i9acKJqBqf5SwyjKgea9P3/rLuxwAcM7A==",
+      "type": "package",
+      "path": "nonfactors.grid.mvc6/7.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "content/Views/Shared/MvcGrid/_Grid.cshtml",
+        "content/Views/Shared/MvcGrid/_Pager.cshtml",
+        "content/css/mvc-grid/csv-logo.ico",
+        "content/css/mvc-grid/fonts/grid-glyphs.woff",
+        "content/css/mvc-grid/mvc-grid.css",
+        "content/js/mvc-grid/mvc-grid.js",
+        "nonfactors.grid.mvc6.7.2.0.nupkg.sha512",
+        "nonfactors.grid.mvc6.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0": [
+      "NonFactors.Grid.Mvc6 >= 7.2.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\callu\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\callu\\Desktop\\dcc\\MVCGrid\\MVCGridProject\\MVCGridProject.csproj",
+      "projectName": "MVCGridProject",
+      "projectPath": "C:\\Users\\callu\\Desktop\\dcc\\MVCGrid\\MVCGridProject\\MVCGridProject.csproj",
+      "packagesPath": "C:\\Users\\callu\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\callu\\Desktop\\dcc\\MVCGrid\\MVCGridProject\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\callu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "net8.0": {
+        "targetAlias": "net8.0",
+        "dependencies": {
+          "NonFactors.Grid.Mvc6": {
+            "target": "Package",
+            "version": "[7.2.0, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.AspNetCore.App": {
+            "privateAssets": "none"
+          },
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.206/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

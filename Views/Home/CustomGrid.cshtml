@@ -1,0 +1,79 @@
+@model IEnumerable<MVCGridProject.Models.Product>
+@using NonFactors.Mvc.Grid;
+
+@{
+    ViewData["Title"] = "Custom Grid";
+}
+
+<h1 class="text-3xl font-bold mb-6">@ViewData["Title"]</h1>
+
+<div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-2">Description</h2>
+    <p class="text-gray-600 dark:text-gray-300">
+        This custom grid demonstrates advanced customization capabilities:
+    </p>
+    <ul class="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
+        <li>Custom CSS classes for specific columns</li>
+        <li>Conditional row styling based on data values</li>
+        <li>Custom HTML rendering for boolean values</li>
+        <li>Action buttons within the grid</li>
+    </ul>
+</div>
+
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(model => model.Id).Titled("ID");
+        columns.Add(model => model.Name).Titled("Name");
+        columns.Add(model => model.Category).Titled("Category");
+        columns.Add(model => model.Price).Titled("Price").Formatted("{0:C}");
+        columns.Add(model => model.Stock).Titled("Stock")
+            .Css("stock-level");
+        columns.Add(model => model.CreatedDate).Titled("Created Date").Formatted("{0:d}");
+        columns.Add(model => model.IsAvailable).Titled("Available")
+            .Formatted("{0}")
+            .Encoded(false);
+        columns.Add(model => model.Id).Titled("Actions")
+            .Encoded(false)
+            .Formatted("{0}");
+    })
+    .Using(GridFilterMode.Header)
+    .Empty("No data found")
+    .Filterable()
+    .Sortable()
+    .Pageable()
+)
+
+@section Scripts {
+    <script src="~/js/mvc-grid/mvc-grid.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            new MvcGrid(document.querySelector(".mvc-grid"), {
+                loadingDelay: 0,
+                reload: false,
+                requestType: 'get',
+                rowClasses: function (row) {
+                    var stock = parseInt(row.cells[4].innerHTML);
+                    if (stock < 10) return 'bg-red-100 dark:bg-red-900';
+                    if (stock < 50) return 'bg-yellow-100 dark:bg-yellow-900';
+                    return 'bg-green-100 dark:bg-green-900';
+                },
+                columns: {
+                    6: {  // IsAvailable column
+                        render: function (data, type, row) {
+                            return data === 'True'
+                                ? '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200">Yes</span>'
+                                : '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200">No</span>';
+                        }
+                    },
+                    7: {  // Actions column
+                        render: function (data, type, row) {
+                            return '<a href="/Home/Details/' + data + '" class="px-3 py-1 text-sm font-medium rounded bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">Details</a>';
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

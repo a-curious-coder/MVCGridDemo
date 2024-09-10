@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "SLHUj7EJirr+TSNp2fNr8zwoqDSDGKWqfFtOT5Vl/wTfSq8VTVw258eIxaMkhc8N4I5GYOF+/zeU/1BZACbjwg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\callu\\Desktop\\dcc\\MVCGrid\\MVCGridProject\\MVCGridProject.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\callu\\.nuget\\packages\\nonfactors.grid.core.mvc6\\7.2.0\\nonfactors.grid.core.mvc6.7.2.0.nupkg.sha512",
+    "C:\\Users\\callu\\.nuget\\packages\\nonfactors.grid.mvc6\\7.2.0\\nonfactors.grid.mvc6.7.2.0.nupkg.sha512"
+  ],
+  "logs": []
+}
