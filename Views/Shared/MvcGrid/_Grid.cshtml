@@ -16,20 +16,20 @@
                 <tr class="mvc-grid-headers@(Model.FilterMode == GridFilterMode.Header ? " mvc-grid-row-filters" : "")">
                 @foreach (IGridColumn column in Model.Columns)
                 {
-                    String applied = (column.Filter.First ?? column.Filter.Second) == null ? "" : " applied";
+                    String applied = ((column.Filter.First ?? column.Filter.Second) == null ? "" : " applied");
 
                     <th@(column.AsAttributes())>
                     @if (column.Filter.IsEnabled == true && !String.IsNullOrEmpty(column.Filter.Name) && Model.FilterMode != GridFilterMode.Row)
                     {
                         if (Model.FilterMode == GridFilterMode.Header)
                         {
-                            String[] values = column.Filter.First?.Values ?? StringValues.Empty;
-                            Int32 size = column.Title is String title && title.Length > 0 ? title.Length : 20;
+                            String[] values = column.Filter.First?.Values ?? Array.Empty<string>();
+                            Int32 size = (column.Title as String)?.Length ?? 20;
 
                         <div>
                             @if (column.Filter.Options.Any())
                             {
-                                values = column.Filter.Options.Where(option => values.Contains(option.Value)).Select(option => option.Text).ToArray();
+                                values = column.Filter.Options.Where(option => values.Contains(option.Value ?? "")).Select(option => option.Text ?? "").ToArray();
 
                             <input class="mvc-grid-value" value="@String.Join(", ", values)" size="@size" placeholder="@column.Title" tabindex="-1" readonly />
                             }
@@ -87,8 +87,8 @@
                         {
                             if (column.Filter.Type == GridFilterType.Multi)
                             {
-                                String[] values = column.Filter.First?.Values ?? StringValues.Empty;
-                                values = column.Filter.Options.Where(option => values.Contains(option.Value)).Select(option => option.Text).ToArray();
+                                String[] values = column.Filter.First?.Values ?? Array.Empty<string>();
+                                values = column.Filter.Options.Where(option => values.Contains(option.Value ?? "")).Select(option => option.Text ?? "").ToArray();
 
                             <input class="mvc-grid-value" value="@String.Join(", ", values)" tabindex="-1" readonly />
 
@@ -104,7 +104,7 @@
                             <select class="mvc-grid-value">
                                 @foreach (SelectListItem option in column.Filter.Options)
                                 {
-                                    if (column.Filter.First?.Values.Contains(option.Value) == true)
+                                    if (column.Filter.First?.Values.Contains(option.Value ?? "") == true)
                                     {
                                 <option value="@option.Value" selected>@option.Text</option>
                                     }
@@ -118,7 +118,7 @@
                         }
                         else
                         {
-                            <input class="mvc-grid-value" value="@column.Filter.First?.Values" />
+                            <input class="mvc-grid-value" value="@(column.Filter.First?.Values ?? Array.Empty<string>())" />
                         }
                             <button type="button" class="mvc-grid-filter@(applied)"></button>
                         </div>

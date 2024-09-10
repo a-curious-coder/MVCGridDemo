@@ -13,8 +13,8 @@ namespace MVCGridProject.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private static List<Product> _products;
-    private static List<Product> _batchedProducts;
+    private static List<Product>? _products;
+    private static List<Product>? _batchedProducts;
 
     public HomeController(ILogger<HomeController> logger)
     {
@@ -33,12 +33,12 @@ public class HomeController : Controller
             Description = "Welcome to the MVC Grid Project Showcase! This application demonstrates various implementations of grids using the NonFactors.Mvc.Grid library. Explore different grid types and functionalities to see how they can be used in your ASP.NET Core MVC projects.",
             GridTypes = new List<GridTypeInfo>
             {
-                new GridTypeInfo { Name = "Basic Grid", Description = "A simple grid implementation with basic functionality.", Url = Url.Action("BasicGrid") },
-                new GridTypeInfo { Name = "Advanced Grid", Description = "An advanced grid with more complex features and customizations.", Url = Url.Action("AdvancedGrid") },
-                new GridTypeInfo { Name = "Custom Grid", Description = "A grid showcasing custom styling and advanced configurations.", Url = Url.Action("CustomGrid") },
-                new GridTypeInfo { Name = "Ajax Grid", Description = "A grid that loads data asynchronously using Ajax.", Url = Url.Action("AjaxGrid") },
-                new GridTypeInfo { Name = "Grouped Grid", Description = "A grid demonstrating grouping functionality.", Url = Url.Action("GroupedGrid") },
-                new GridTypeInfo { Name = "Batched Ajax Grid", Description = "An Ajax grid that loads data in batches for improved performance.", Url = Url.Action("BatchedAjaxGrid") }
+                new GridTypeInfo { Name = "Basic Grid", Description = "A simple grid implementation with basic functionality.", Url = Url.Action("BasicGrid") ?? "#" },
+                new GridTypeInfo { Name = "Advanced Grid", Description = "An advanced grid with more complex features and customizations.", Url = Url.Action("AdvancedGrid") ?? "#" },
+                new GridTypeInfo { Name = "Custom Grid", Description = "A grid showcasing custom styling and advanced configurations.", Url = Url.Action("CustomGrid") ?? "#" },
+                new GridTypeInfo { Name = "Ajax Grid", Description = "A grid that loads data asynchronously using Ajax.", Url = Url.Action("AjaxGrid") ?? "#" },
+                new GridTypeInfo { Name = "Grouped Grid", Description = "A grid demonstrating grouping functionality.", Url = Url.Action("GroupedGrid") ?? "#" },
+                new GridTypeInfo { Name = "Batched Ajax Grid", Description = "An Ajax grid that loads data in batches for improved performance.", Url = Url.Action("BatchedAjaxGrid") ?? "#" }
             }
         };
 
@@ -119,7 +119,7 @@ public class HomeController : Controller
             // Simulate a short delay for each batch retrieval
             Thread.Sleep(200);
 
-            return PartialView("_BatchedAjaxGrid", _batchedProducts.AsQueryable());
+            return PartialView("_BatchedAjaxGrid", _batchedProducts?.AsQueryable() ?? Enumerable.Empty<Product>().AsQueryable());
         }
 
         return View();

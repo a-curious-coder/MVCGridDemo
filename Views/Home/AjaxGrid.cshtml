@@ -23,7 +23,7 @@
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100"></div>
         <p class="mt-2">Loading data... This may take up to 30 seconds.</p>
     </div>
-    @Html.AjaxGrid(Url.Action("GetAjaxGridData"))
+    @(Html.AjaxGrid(Url.Action("GetAjaxGridData") ?? ""))
 </div>
 
 @section Scripts {

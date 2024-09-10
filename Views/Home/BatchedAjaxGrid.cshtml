@@ -22,7 +22,7 @@
 </div>
 
 <div id="grid-container">
-    @Html.AjaxGrid(Url.Action("GetBatchedAjaxGridData"))
+    @(Html.AjaxGrid(Url.Action("GetBatchedAjaxGridData") ?? ""))
 </div>
 
 @section Scripts {
