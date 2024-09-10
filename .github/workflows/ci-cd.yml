@@ -1,0 +1,120 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Save commit hash
+      if: success()
+      run: echo ${{ github.sha }} > commit_hash.txt
+
+    - name: Upload commit hash
+      if: success()
+      uses: actions/upload-artifact@v2
+      with:
+        name: commit-hash
+        path: commit_hash.txt
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Copy files to VPS
+      env:
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      run: |
+        echo "$VPS_SSH_KEY" > vps_ssh_key
+        chmod 600 vps_ssh_key
+        scp -i vps_ssh_key -o StrictHostKeyChecking=no -r . ${VPS_USER}@${VPS_HOST}:~/mvcgridproject/
+        rm vps_ssh_key
+
+    - name: Deploy to VPS
+      env:
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      run: |
+        echo "$VPS_SSH_KEY" > vps_ssh_key
+        chmod 600 vps_ssh_key
+        ssh -i vps_ssh_key -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
+          cd ~/mvcgridproject
+          docker-compose build
+          docker-compose up -d
+        '
+        rm vps_ssh_key
+
+  rollback:
+    needs: [build-and-test, deploy]
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Download commit hash
+      uses: actions/download-artifact@v2
+      with:
+        name: commit-hash
+
+    - name: Get last working commit
+      run: echo "LAST_WORKING_COMMIT=$(cat commit_hash.txt)" >> $GITHUB_ENV
+
+    - name: Checkout last working commit
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.LAST_WORKING_COMMIT }}
+
+    - name: Copy rollback files to VPS
+      env:
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      run: |
+        echo "$VPS_SSH_KEY" > vps_ssh_key
+        chmod 600 vps_ssh_key
+        scp -i vps_ssh_key -o StrictHostKeyChecking=no -r . ${VPS_USER}@${VPS_HOST}:~/mvcgridproject_rollback/
+        rm vps_ssh_key
+
+    - name: Deploy rollback to VPS
+      env:
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      run: |
+        echo "$VPS_SSH_KEY" > vps_ssh_key
+        chmod 600 vps_ssh_key
+        ssh -i vps_ssh_key -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
+          cd ~/mvcgridproject_rollback
+          docker-compose build
+          docker-compose up -d
+        '
+        rm vps_ssh_key
