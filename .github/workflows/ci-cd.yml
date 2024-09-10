@@ -46,44 +46,28 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Debug SSH connection
+    - name: Setup SSH key
       env:
-        VPS_HOST: ${{ secrets.VPS_HOST }}
-        VPS_USER: ${{ secrets.VPS_USER }}
-        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-      run: |
-        echo "$VPS_SSH_KEY" > vps_ssh_key
-        chmod 600 vps_ssh_key
-        ssh-keygen -l -f vps_ssh_key
-        ssh -v -i vps_ssh_key -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} 'echo "SSH connection successful"'
-
-    - name: Copy files to VPS
-      env:
-        VPS_HOST: ${{ secrets.VPS_HOST }}
-        VPS_USER: ${{ secrets.VPS_USER }}
-        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-      run: |
-        echo "$VPS_SSH_KEY" > vps_ssh_key
-        chmod 600 vps_ssh_key
-        scp -v -i vps_ssh_key -o StrictHostKeyChecking=no -r . ${VPS_USER}@${VPS_HOST}:~/mvcgridproject/
-        rm vps_ssh_key
-
-    - name: Deploy to VPS
-      env:
-        VPS_HOST: ${{ secrets.VPS_HOST }}
-        VPS_USER: ${{ secrets.VPS_USER }}
         VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
       run: |
         mkdir -p ~/.ssh
         echo "$VPS_SSH_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
+        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Debug SSH connection
+      run: ssh -v ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'echo "SSH connection successful"'
+
+    - name: Copy files to VPS
+      run: scp -r . ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/mvcgridproject/
+
+    - name: Deploy to VPS
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
           cd ~/mvcgridproject
           docker-compose build
           docker-compose up -d
         '
-        rm ~/.ssh/id_rsa
 
   rollback:
     needs: [build-and-test, deploy]
