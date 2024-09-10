@@ -36,4 +36,12 @@ app.MapControllerRoute(
 app.MapHealthChecks("/health");
 
 // Remove the explicit binding, let it use the ASPNETCORE_URLS environment variable
-app.Run("http://127.0.0.1:5001");
+app.Run();
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Request received for {context.Request.Path}");
+    await next.Invoke();
+});
+
+// Place this before other middleware

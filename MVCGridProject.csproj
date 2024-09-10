@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Add this line -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +18,19 @@
       <CSharpLanguageVersion>preview</CSharpLanguageVersion>
       <NullableContextOptions>disable</NullableContextOptions>
     </None>
+  </ItemGroup>
+
+  <!-- Update this ItemGroup -->
+  <ItemGroup>
+    <Content Include="Views\**\*.cshtml" />
+    <Content Include="wwwroot\**\*" />
+  </ItemGroup>
+
+  <!-- Explicitly exclude any potential duplicate CSS files -->
+  <ItemGroup>
+    <Content Remove="Views\**\*.css" />
+    <Content Remove="obj\**\*.css" />
+    <Content Remove="bin\**\*.css" />
   </ItemGroup>
 
 </Project>
