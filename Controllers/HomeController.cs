@@ -128,7 +128,7 @@ public class HomeController : Controller
     private static async Task<List<Product>> GenerateProductsAsync()
     {
         // Simulate a long-running database query
-        await Task.Delay(25000); // 25 seconds delay
+        await Task.Delay(5000); // 25 seconds delay
 
         var random = new Random(42); // Seed for consistent randomness
         var categories = new[] { "Electronics", "Clothing", "Books", "Home & Garden", "Toys" };

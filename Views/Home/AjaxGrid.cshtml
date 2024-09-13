@@ -30,14 +30,43 @@
     <script src="~/js/mvc-grid/mvc-grid.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var grid = new MvcGrid(document.querySelector(".mvc-grid"));
-            grid.reload = function () {
-                document.getElementById("loading-indicator").style.display = "block";
-                return MvcGrid.prototype.reload.apply(this, arguments).then(function () {
-                    document.getElementById("loading-indicator").style.display = "none";
-                });
-            };
-            grid.reload();
+            var gridContainer = document.querySelector(".mvc-grid");
+            var loadingIndicator = document.getElementById("loading-indicator");
+
+            function showLoadingIndicator() {
+                loadingIndicator.style.display = "block";
+                gridContainer.style.opacity = "0.5";
+            }
+
+            function hideLoadingIndicator() {
+                loadingIndicator.style.display = "none";
+                gridContainer.style.opacity = "1";
+            }
+
+            // Initialize the grid after a short delay
+            setTimeout(function() {
+                var grid = new MvcGrid(gridContainer);
+
+                grid.reload = function () {
+                    showLoadingIndicator();
+                    return MvcGrid.prototype.reload.apply(this, arguments)
+                        .then(hideLoadingIndicator)
+                        .catch(function (error) {
+                            console.error("Error reloading grid:", error);
+                            hideLoadingIndicator();
+                        });
+                };
+
+                // Set up event listeners for grid operations
+                grid.element.addEventListener('reloadstart', showLoadingIndicator);
+                grid.element.addEventListener('reloadend', hideLoadingIndicator);
+
+                // Trigger initial load
+                grid.reload();
+            }, 100);
+
+            // Hide loading indicator if grid fails to initialize
+            setTimeout(hideLoadingIndicator, 5000);
         });
     </script>
 }

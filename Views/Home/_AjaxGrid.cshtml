@@ -6,16 +6,22 @@
     .Build(columns =>
     {
         columns.Add(model => model.Id).Titled("ID");
-        columns.Add(model => model.Name).Titled("Name");
+        columns.Add(model => model.Name).Titled("Name").Sortable(GridSortOrder.Desc);
         columns.Add(model => model.Category).Titled("Category");
-        columns.Add(model => model.Price).Titled("Price").Formatted("{0:C}");
+        columns.Add(model => model.Price).Titled("Price").Formatted("£{0:N2}");
         columns.Add(model => model.Stock).Titled("Stock");
         columns.Add(model => model.CreatedDate).Titled("Created Date").Formatted("{0:d}");
         columns.Add(model => model.IsAvailable).Titled("Available");
     })
     .Using(GridFilterMode.Header)
     .Empty("No data found")
-    .Filterable()
+    .Filterable(GridFilterCase.Lower)
     .Sortable()
-    .Pageable()
+    .Pageable(pager =>
+    {
+        pager.PageSizes = new Dictionary<Int32, String> {  { 5, "5" }, { 10, "10" }, { 20, "20" }, { 50, "50" } };
+        pager.ShowPageSizes = true;
+        pager.CurrentPage = 1;
+        pager.RowsPerPage = 5;
+    })
 )
