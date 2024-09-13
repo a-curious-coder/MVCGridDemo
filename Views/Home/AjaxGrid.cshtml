@@ -5,41 +5,41 @@
 
 <h1 class="text-3xl font-bold mb-6">@ViewData["Title"]</h1>
 
-<div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8 transition-all duration-300 ease-in-out">
+<div class="bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-lg p-4 mb-6 transition-all duration-300 ease-in-out">
     <div class="flex justify-between items-center cursor-pointer" onclick="toggleDescription()">
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Description</h2>
-        <svg id="chevron" class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <h2 class="text-xl font-bold text-white">Description</h2>
+        <svg id="chevron" class="w-5 h-5 transform transition-transform duration-300 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
     </div>
-    <div id="description-content" class="mt-4 overflow-hidden transition-all duration-300 ease-in-out" style="max-height: 0;">
-        <p class="text-gray-700 dark:text-gray-300 font-semibold mb-3">
-            This grid demonstrates loading data asynchronously using Ajax:
+    <div id="description-content" class="mt-3 overflow-hidden transition-all duration-300 ease-in-out" style="max-height: 0;">
+        <p class="text-white font-medium mb-2">
+            This grid loads data asynchronously using Ajax:
         </p>
-        <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+        <ul class="space-y-1 text-white text-sm">
             <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-4 h-4 mr-2 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span class="font-medium">Data is loaded without a full page refresh</span>
+                <span>No full page refresh</span>
             </li>
             <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-4 h-4 mr-2 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span class="font-medium">Improves performance for large datasets</span>
+                <span>Improved performance</span>
             </li>
             <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-4 h-4 mr-2 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span class="font-medium">Allows for real-time updates</span>
+                <span>Real-time updates</span>
             </li>
             <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-4 h-4 mr-2 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span class="font-medium">Shows a loading indicator while data is being fetched</span>
+                <span>Loading indicator</span>
             </li>
         </ul>
     </div>
