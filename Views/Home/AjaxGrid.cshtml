@@ -5,17 +5,44 @@
 
 <h1 class="text-3xl font-bold mb-6">@ViewData["Title"]</h1>
 
-<div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
-    <h2 class="text-xl font-semibold mb-2">Description</h2>
-    <p class="text-gray-600 dark:text-gray-300">
-        This grid demonstrates loading data asynchronously using Ajax:
-    </p>
-    <ul class="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
-        <li>Data is loaded without a full page refresh</li>
-        <li>Improves performance for large datasets</li>
-        <li>Allows for real-time updates</li>
-        <li>Shows a loading indicator while data is being fetched</li>
-    </ul>
+<div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8 transition-all duration-300 ease-in-out">
+    <div class="flex justify-between items-center cursor-pointer" onclick="toggleDescription()">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Description</h2>
+        <svg id="chevron" class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+    <div id="description-content" class="mt-4 overflow-hidden transition-all duration-300 ease-in-out" style="max-height: 0;">
+        <p class="text-gray-700 dark:text-gray-300 font-semibold mb-3">
+            This grid demonstrates loading data asynchronously using Ajax:
+        </p>
+        <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+            <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="font-medium">Data is loaded without a full page refresh</span>
+            </li>
+            <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="font-medium">Improves performance for large datasets</span>
+            </li>
+            <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="font-medium">Allows for real-time updates</span>
+            </li>
+            <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="font-medium">Shows a loading indicator while data is being fetched</span>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <div id="grid-container">
@@ -68,5 +95,17 @@
             // Hide loading indicator if grid fails to initialize
             setTimeout(hideLoadingIndicator, 5000);
         });
+
+        function toggleDescription() {
+            const content = document.getElementById('description-content');
+            const chevron = document.getElementById('chevron');
+            if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                chevron.classList.add('rotate-180');
+            } else {
+                content.style.maxHeight = '0px';
+                chevron.classList.remove('rotate-180');
+            }
+        }
     </script>
 }
