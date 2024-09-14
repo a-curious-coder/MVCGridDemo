@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x'
 
@@ -50,27 +50,24 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup SSH key
-      env:
-        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-      run: |
-        mkdir -p ~/.ssh
-        echo "$VPS_SSH_KEY" > ~/.ssh/id_ed25519
-        chmod 600 ~/.ssh/id_ed25519
-        ssh-keyscan -v -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-    - name: Debug SSH connection
-      run: ssh -v ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} 'echo "SSH connection successful"'
+    - name: Add VPS to known hosts
+      run: ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
 
     - name: Copy files to VPS
-      run: scp -r . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}/
+      run: rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}/
 
     - name: Deploy to VPS
       run: |
         ssh ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
           cd ${{ vars.VPS_REPO_DIR }}
+          docker-compose down
           docker-compose build
           docker-compose up -d
         '
@@ -81,7 +78,7 @@ jobs:
     if: failure()
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Download commit hash
       uses: actions/download-artifact@v3
@@ -92,28 +89,37 @@ jobs:
       run: echo "LAST_WORKING_COMMIT=$(cat commit_hash.txt)" >> $GITHUB_ENV
 
     - name: Checkout last working commit
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.LAST_WORKING_COMMIT }}
 
+    - name: Setup SSH key
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
+    - name: Add VPS to known hosts
+      run: ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
+
     - name: Copy rollback files to VPS
-      env:
-        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-      run: |
-        echo "$VPS_SSH_KEY" > vps_ssh_key
-        chmod 600 vps_ssh_key
-        scp -i vps_ssh_key -o StrictHostKeyChecking=no -r . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}_rollback/
-        rm vps_ssh_key
+      run: rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}_rollback/
 
     - name: Deploy rollback to VPS
-      env:
-        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
       run: |
-        echo "$VPS_SSH_KEY" > vps_ssh_key
-        chmod 600 vps_ssh_key
-        ssh -i vps_ssh_key -o StrictHostKeyChecking=no ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
+        ssh ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
           cd ${{ vars.VPS_REPO_DIR }}_rollback
+          docker-compose down
           docker-compose build
           docker-compose up -d
         '
-        rm vps_ssh_key
+
+    - name: Notify rollback
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: Rollback deployed due to failure in main deployment
+        fields: repo,message,commit,author,action,eventName,ref,workflow
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+      if: always()
