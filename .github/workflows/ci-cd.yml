@@ -99,7 +99,10 @@ jobs:
         ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
     - name: Add VPS to known hosts
-      run: ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
+      run:  |
+        ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
+        echo "Current known_hosts content:"
+        cat ~/.ssh/known_hosts
 
     - name: Copy rollback files to VPS
       run: rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}_rollback/
