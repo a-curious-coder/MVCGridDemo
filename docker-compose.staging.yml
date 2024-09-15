@@ -1,0 +1,6 @@
+services:
+  mvcgridproject:
+    ports:
+      - "8001:5001"  # Change port for staging
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging  # Specify staging environment

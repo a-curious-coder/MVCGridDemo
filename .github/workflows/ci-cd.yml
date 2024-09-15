@@ -8,9 +8,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, staging ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, staging ]
 
 jobs:
   build-and-test:
@@ -47,7 +47,7 @@ jobs:
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
 
     steps:
     - uses: actions/checkout@v3
@@ -61,16 +61,30 @@ jobs:
       run: ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
 
     - name: Copy files to VPS
-      run: rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}/
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}_production/
+        else
+          rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}_staging/
+        fi
 
     - name: Deploy to VPS
       run: |
-        ssh ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
-          cd ${{ vars.VPS_REPO_DIR }}
-          docker-compose down
-          docker-compose build
-          docker-compose up -d
-        '
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          ssh ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
+            cd ${{ vars.VPS_REPO_DIR }}_production
+            docker compose -f docker-compose.yml -f docker-compose.production.yml down
+            docker compose -f docker-compose.yml -f docker-compose.production.yml build --no-cache
+            docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
+          '
+        else
+          ssh ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
+            cd ${{ vars.VPS_REPO_DIR }}_staging
+            docker compose -f docker-compose.yml -f docker-compose.staging.yml down
+            docker compose -f docker-compose.yml -f docker-compose.staging.yml build --no-cache
+            docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d
+          '
+        fi
 
   rollback:
     needs: [build-and-test, deploy]
@@ -99,28 +113,40 @@ jobs:
         ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
     - name: Add VPS to known hosts
-      run:  |
+      run: |
         ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
-        echo "Current known_hosts content:"
-        cat ~/.ssh/known_hosts
 
     - name: Copy rollback files to VPS
-      run: rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}_rollback/
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}_production_rollback/
+        else
+          rsync -avz --delete . ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }}:${{ vars.VPS_REPO_DIR }}_staging_rollback/
+        fi
 
     - name: Deploy rollback to VPS
       run: |
-        ssh ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
-          cd ${{ vars.VPS_REPO_DIR }}_rollback
-          docker-compose down
-          docker-compose build
-          docker-compose up -d
-        '
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          ssh ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
+            cd ${{ vars.VPS_REPO_DIR }}_production_rollback
+            docker compose -f docker-compose.yml -f docker-compose.production.yml down
+            docker compose -f docker-compose.yml -f docker-compose.production.yml build
+            docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
+          '
+        else
+          ssh ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} '
+            cd ${{ vars.VPS_REPO_DIR }}_staging_rollback
+            docker compose -f docker-compose.yml -f docker-compose.staging.yml down
+            docker compose -f docker-compose.yml -f docker-compose.staging.yml build
+            docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d
+          '
+        fi
 
     - name: Notify rollback
       uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
-        text: Rollback deployed due to failure in main deployment
+        text: Rollback deployed due to failure in ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }} deployment
         fields: repo,message,commit,author,action,eventName,ref,workflow
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

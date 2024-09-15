@@ -1,0 +1,6 @@
+services:
+  mvcgridproject:
+    ports:
+      - "5001:5001"  # Port for production
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production  # Specify production environment
